@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 
 import API from "../services/api";
+
 import ProductCard from "../components/ProductCard";
+import Cart from "../components/Cart";
+import SearchBar from "../components/SearchBar";
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -46,33 +49,34 @@ function Products() {
   );
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-5xl font-bold mb-6">
-        Products
-      </h1>
+  <div className="p-8 bg-gray-100 min-h-screen">
+    <h1 className="text-5xl font-bold mb-6">
+      Products
+    </h1>
 
-      <input
-        type="text"
-        placeholder="Search products..."
-        className="w-full p-3 rounded-lg mb-6 border"
-        onChange={(e) => setSearch(e.target.value)}
-      />
+    <SearchBar
+      search={search}
+      setSearch={setSearch}
+    />
 
-      <h2 className="text-3xl mb-6">
-        Cart Total: Ksh {total}
-      </h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {filteredProducts.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            addToCart={addToCart}
-          />
-        ))}
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      
+      <div className="lg:col-span-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              addToCart={addToCart}
+            />
+          ))}
+        </div>
       </div>
+
+      <Cart cart={cart} />
     </div>
-  );
+  </div>
+);
 }
 
 export default Products;
