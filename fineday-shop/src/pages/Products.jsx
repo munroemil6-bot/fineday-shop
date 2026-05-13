@@ -11,14 +11,20 @@ function Products() {
   const [cart, setCart] = useState([]);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
+    useEffect(() => {
     fetchProducts();
-  }, []);
+    }, []);
 
-  const fetchProducts = async () => {
-    const response = await API.get("/products");
-    setProducts(response.data);
-  };
+    const fetchProducts = async () => {
+    try {
+        const response = await API.get("/products");
+
+        setProducts(response.data);
+
+    } catch (error) {
+        console.log(error);
+    }
+    };
 
   const addToCart = async (product) => {
     if (product.quantity <= 0) {

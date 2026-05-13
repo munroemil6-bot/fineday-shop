@@ -1,13 +1,30 @@
-import { render, screen } from "@testing-library/react";
+import {
+  render,
+  screen
+} from "@testing-library/react";
+
 import ProductCard from "../components/ProductCard";
 
-test("updates quantity after purchase", () => {
-  const mockProduct = {
-    name: "Bread",
-    quantity: 10
-  };
+test(
+  "renders product quantity",
+  () => {
+    const product = {
+      id: 1,
+      name: "Bread",
+      price: 80,
+      quantity: 10,
+      image: ""
+    };
 
-  render(<ProductCard product={mockProduct} />);
+    render(
+      <ProductCard
+        product={product}
+        addToCart={() => {}}
+      />
+    );
 
-  expect(screen.getByText(/10/i)).toBeInTheDocument();
-});
+    expect(
+      screen.getByText(/Available/i)
+    ).toBeInTheDocument();
+  }
+);

@@ -2,9 +2,11 @@ import { Navigate } from "react-router-dom";
 
 function ProtectedRoute({
   user,
-  children,
+  children
 }) {
+
   if (!user) {
+
     return (
       <Navigate to="/admin-login" />
     );
