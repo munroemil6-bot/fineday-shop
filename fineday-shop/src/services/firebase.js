@@ -1,16 +1,20 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+
+import {
+  getAuth
+} from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_ID",
-  storageBucket: "YOUR_BUCKET",
-  messagingSenderId: "YOUR_SENDER",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDCYyTGNC3ogS8OWx3Yd4x0o4W0Kw7Dr3A",
+  authDomain: "fineday-3827a.firebaseapp.com",
+  projectId: "fineday-3827a",
+  storageBucket: "fineday-3827a.firebasestorage.app",
+  messagingSenderId: "655529493515",
+  appId: "1:655529493515:web:3e3a0302ccfff12bbfb30e"
 };
 
-const app = initializeApp(firebaseConfig);
+const app =
+  initializeApp(firebaseConfig);
 
-export const auth = getAuth(app);
-export const provider = new GoogleAuthProvider();
+export const auth =
+  getAuth(app);

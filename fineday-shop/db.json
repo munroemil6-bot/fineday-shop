@@ -4,22 +4,29 @@
       "id": "1",
       "name": "Bread",
       "price": 80,
-      "quantity": 4,
+      "quantity": 12,
       "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff"
     },
     {
       "id": "2",
       "name": "Milk",
       "price": 120,
-      "quantity": 7,
+      "quantity": 20,
       "image": "https://images.unsplash.com/photo-1550583724-b2692b85b150"
     },
     {
       "id": "3",
       "name": "Rice",
-      "price": 250,
-      "quantity": 6,
+      "price": 120,
+      "quantity": 12,
       "image": "https://images.unsplash.com/photo-1586201375761-83865001e31c"
+    },
+    {
+      "name": "Indomie",
+      "price": 50,
+      "quantity": 99,
+      "image": "https://c8.alamy.com/comp/CCDRMA/indomie-instant-noodles-chicken-flavour-produced-in-indonesia-and-CCDRMA.jpg",
+      "id": "rQIi5wzkS3Y"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

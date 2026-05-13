@@ -1,29 +1,23 @@
-import { Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../services/firebase";
+import {
+  Navigate
+} from "react-router-dom";
 
-function ProtectedRoute({ children }) {
+import {
+  auth
+} from "../services/firebase";
 
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+function ProtectedRoute({
+  children
+}) {
 
-  useEffect(() => {
+  const user =
+    auth.currentUser;
 
-    const unsub = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-      setLoading(false);
-    });
+  if (!user) {
 
-    return () => unsub();
-
-  }, []);
-
-  if (loading) return <p className="p-10">Loading...</p>;
-
-  // ONLY ALLOW THIS ADMIN EMAIL
-  if (!user || user.email !== "finedayshoppers1234@gmail.com") {
-    return <Navigate to="/admin-login" />;
+    return (
+      <Navigate to="/admin-login" />
+    );
   }
 
   return children;
