@@ -1,73 +1,94 @@
-import { useState } from "react";
+import {
+  useState
+} from "react";
 
 import {
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  signInWithPopup
 } from "firebase/auth";
 
-import { auth } from "../services/firebase";
+import {
+  auth,
+  provider
+} from "../services/firebase";
 
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate
+} from "react-router-dom";
 
 function AdminLogin() {
 
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
-  const [email, setEmail] =
+  const [email,
+    setEmail] =
     useState("");
 
-  const [password, setPassword] =
+  const [password,
+    setPassword] =
     useState("");
 
-  const [error, setError] =
+  const [error,
+    setError] =
     useState("");
 
-  const handleLogin = async (e) => {
+  const handleLogin =
+    async (e) => {
 
-    e.preventDefault();
+      e.preventDefault();
 
-    setError("");
+      try {
 
-    try {
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
 
-      await signInWithEmailAndPassword(
+        navigate("/dashboard");
+
+      } catch {
+
+        setError(
+          "Invalid credentials"
+        );
+      }
+    };
+
+  const handleGoogleLogin =
+    async () => {
+
+      await signInWithPopup(
         auth,
-        email,
-        password
+        provider
       );
 
       navigate("/dashboard");
-
-    } catch (error) {
-
-      setError(
-        "Invalid admin credentials"
-      );
-    }
-  };
+    };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
+    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-black to-gray-800">
 
       <form
         onSubmit={handleLogin}
-        className="bg-white p-8 rounded-xl shadow-xl w-96"
+        className="bg-white p-10 rounded-2xl shadow-2xl w-[400px]"
       >
 
-        <h1 className="text-4xl font-bold mb-6 text-center">
+        <h1 className="text-4xl font-bold text-center mb-8">
           Admin Login
         </h1>
 
         {error && (
-          <p className="text-red-500 mb-4 text-center">
+          <p className="text-red-500 mb-4">
             {error}
           </p>
         )}
 
         <input
           type="email"
-          placeholder="Admin Email"
+          placeholder="Email"
           className="w-full p-3 border rounded-lg mb-4"
-          value={email}
           onChange={(e) =>
             setEmail(e.target.value)
           }
@@ -77,17 +98,23 @@ function AdminLogin() {
           type="password"
           placeholder="Password"
           className="w-full p-3 border rounded-lg mb-4"
-          value={password}
           onChange={(e) =>
             setPassword(e.target.value)
           }
         />
 
         <button
-          type="submit"
-          className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800"
+          className="w-full bg-black text-white py-3 rounded-lg mb-4"
         >
           Login
+        </button>
+
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          className="w-full bg-red-500 text-white py-3 rounded-lg"
+        >
+          Sign In With Google
         </button>
 
       </form>

@@ -1,39 +1,73 @@
-import { useState } from "react";
+import {
+  useState
+} from "react";
 
-import API from "../services/api";
+import axios from "axios";
+
+import {
+  useNavigate
+} from "react-router-dom";
 
 function AddProduct() {
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
+
+  const navigate = useNavigate();
+
+  const [name, setName] =
+    useState("");
+
+  const [price, setPrice] =
+    useState("");
+
   const [quantity, setQuantity] =
     useState("");
 
-  const [image, setImage] = useState("");
+  const [image, setImage] =
+    useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (
+    e
+  ) => {
+
     e.preventDefault();
 
     const newProduct = {
+
       name,
+
       price: Number(price),
+
       quantity: Number(quantity),
+
       image
     };
 
-    await API.post(
-      "/products",
-      newProduct
-    );
+    try {
 
-    alert("Product added");
+      await axios.post(
+        "http://localhost:3001/products",
+        newProduct
+      );
+
+      alert(
+        "Product Added Successfully"
+      );
+
+      navigate("/dashboard");
+
+    } catch (error) {
+
+      console.log(error);
+    }
   };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
+
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-xl shadow-xl w-[400px]"
       >
+
         <h1 className="text-4xl font-bold mb-6 text-center">
           Add Product
         </h1>
@@ -45,6 +79,7 @@ function AddProduct() {
           onChange={(e) =>
             setName(e.target.value)
           }
+          required
         />
 
         <input
@@ -54,6 +89,7 @@ function AddProduct() {
           onChange={(e) =>
             setPrice(e.target.value)
           }
+          required
         />
 
         <input
@@ -63,6 +99,7 @@ function AddProduct() {
           onChange={(e) =>
             setQuantity(e.target.value)
           }
+          required
         />
 
         <input
@@ -72,6 +109,7 @@ function AddProduct() {
           onChange={(e) =>
             setImage(e.target.value)
           }
+          required
         />
 
         <button
@@ -80,7 +118,9 @@ function AddProduct() {
         >
           Add Product
         </button>
+
       </form>
+
     </div>
   );
 }

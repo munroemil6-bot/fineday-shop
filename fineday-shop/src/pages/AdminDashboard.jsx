@@ -3,15 +3,12 @@ import {
   useState
 } from "react";
 
-import {
-  Link
-} from "react-router-dom";
-
-import API from "../services/api";
+import axios from "axios";
 
 function AdminDashboard() {
 
-  const [products, setProducts] =
+  const [products,
+    setProducts] =
     useState([]);
 
   useEffect(() => {
@@ -20,56 +17,93 @@ function AdminDashboard() {
 
   }, []);
 
-  const fetchProducts = async () => {
+  const fetchProducts =
+    async () => {
 
-    const response =
-      await API.get("/products");
+      const response =
+        await axios.get(
+          "http://localhost:3001/products"
+        );
 
-    setProducts(response.data);
-  };
+      setProducts(response.data);
+    };
 
-  const restock = async (
-    product
-  ) => {
+  const editProduct =
+    async (product) => {
 
-    const updatedQuantity =
-      product.quantity + 10;
+      const price =
+        prompt(
+          "New Price",
+          product.price
+        );
 
-    await API.patch(
-      `/products/${product.id}`,
-      {
-        quantity: updatedQuantity
-      }
-    );
+      const quantity =
+        prompt(
+          "New Quantity",
+          product.quantity
+        );
 
-    fetchProducts();
-  };
+      await axios.patch(
+        `http://localhost:3001/products/${product.id}`,
+        {
+          price:
+            Number(price),
+
+          quantity:
+            Number(quantity)
+        }
+      );
+
+      fetchProducts();
+    };
+
+  const addProduct =
+    async () => {
+
+      const name =
+        prompt("Name");
+
+      const price =
+        prompt("Price");
+
+      const quantity =
+        prompt("Quantity");
+
+      const image =
+        prompt("Image URL");
+
+      await axios.post(
+        "http://localhost:3001/products",
+        {
+          name,
+          price:
+            Number(price),
+          quantity:
+            Number(quantity),
+          image
+        }
+      );
+
+      fetchProducts();
+    };
 
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
 
-      <div className="flex justify-between items-center mb-8">
+      <h1 className="text-5xl font-bold mb-8">
+        Admin Dashboard
+      </h1>
 
-        <h1 className="text-5xl font-bold">
-          Admin Dashboard
-        </h1>
-
-        <Link
-          to="/add-product"
-          className="bg-black text-white px-4 py-2 rounded-lg"
-        >
-          Add Product
-        </Link>
-
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         {products.map((product) => (
 
           <div
             key={product.id}
-            className="bg-white p-6 rounded-xl shadow-lg"
+            onClick={() =>
+              editProduct(product)
+            }
+            className="bg-white p-6 rounded-xl shadow-lg cursor-pointer"
           >
 
             <img
@@ -82,27 +116,26 @@ function AdminDashboard() {
               {product.name}
             </h2>
 
-            <p className="mt-2">
-              Price: Ksh {product.price}
+            <p>
+              Ksh {product.price}
             </p>
 
             <p>
-              Quantity: {product.quantity}
+              Quantity:
+              {product.quantity}
             </p>
-
-            <button
-              onClick={() =>
-                restock(product)
-              }
-              className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-            >
-              Restock +10
-            </button>
 
           </div>
         ))}
 
       </div>
+
+      <button
+        onClick={addProduct}
+        className="fixed bottom-8 right-8 bg-black text-white text-4xl w-16 h-16 rounded-full"
+      >
+        +
+      </button>
 
     </div>
   );
