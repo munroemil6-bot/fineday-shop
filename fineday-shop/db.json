@@ -1,0 +1,25 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Bread",
+      "price": 80,
+      "quantity": 20,
+      "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff"
+    },
+    {
+      "id": 2,
+      "name": "Milk",
+      "price": 120,
+      "quantity": 15,
+      "image": "https://images.unsplash.com/photo-1550583724-b2692b85b150"
+    },
+    {
+      "id": 3,
+      "name": "Rice",
+      "price": 250,
+      "quantity": 10,
+      "image": "https://images.unsplash.com/photo-1586201375761-83865001e31c"
+    }
+  ]
+}
