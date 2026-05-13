@@ -1,120 +1,103 @@
-import {
-  useState
-} from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import {
   signInWithEmailAndPassword,
   signInWithPopup
 } from "firebase/auth";
 
-import {
-  auth,
-  provider
-} from "../services/firebase";
-
-import {
-  useNavigate
-} from "react-router-dom";
+import { auth, provider } from "../services/firebase";
 
 function AdminLogin() {
 
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
 
-  const [email,
-    setEmail] =
-    useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const [password,
-    setPassword] =
-    useState("");
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-  const [error,
-    setError] =
-    useState("");
+    try {
+      const userCredential =
+        await signInWithEmailAndPassword(auth, email, password);
 
-  const handleLogin =
-    async (e) => {
+      const user = userCredential.user;
 
-      e.preventDefault();
-
-      try {
-
-        await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-
-        navigate("/dashboard");
-
-      } catch {
-
-        setError(
-          "Invalid credentials"
-        );
+      // extra safety check
+      if (user.email !== "fineday@gmail.com") {
+        setError("Not authorized as admin");
+        return;
       }
-    };
-
-  const handleGoogleLogin =
-    async () => {
-
-      await signInWithPopup(
-        auth,
-        provider
-      );
 
       navigate("/dashboard");
-    };
+
+    } catch (err) {
+      setError("Invalid login credentials");
+    }
+  };
+
+  const handleGoogle = async () => {
+
+    try {
+      const result = await signInWithPopup(auth, provider);
+
+      if (result.user.email !== "fineday@gmail.com") {
+        setError("Not authorized admin account");
+        return;
+      }
+
+      navigate("/dashboard");
+
+    } catch (err) {
+      setError("Google login failed");
+    }
+  };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-black to-gray-800">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black to-gray-700">
 
       <form
         onSubmit={handleLogin}
-        className="bg-white p-10 rounded-2xl shadow-2xl w-[400px]"
+        className="bg-white p-10 rounded-2xl w-[380px]"
       >
 
-        <h1 className="text-4xl font-bold text-center mb-8">
+        <h1 className="text-3xl font-bold mb-6 text-center">
           Admin Login
         </h1>
 
         {error && (
-          <p className="text-red-500 mb-4">
+          <p className="text-red-500 mb-3">
             {error}
           </p>
         )}
 
         <input
-          type="email"
+          className="w-full border p-3 mb-4"
           placeholder="Email"
-          className="w-full p-3 border rounded-lg mb-4"
-          onChange={(e) =>
-            setEmail(e.target.value)
-          }
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
           type="password"
+          className="w-full border p-3 mb-4"
           placeholder="Password"
-          className="w-full p-3 border rounded-lg mb-4"
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
+          onChange={(e) => setPassword(e.target.value)}
         />
 
         <button
-          className="w-full bg-black text-white py-3 rounded-lg mb-4"
+          className="w-full bg-black text-white py-3 mb-3"
         >
           Login
         </button>
 
         <button
           type="button"
-          onClick={handleGoogleLogin}
-          className="w-full bg-red-500 text-white py-3 rounded-lg"
+          onClick={handleGoogle}
+          className="w-full bg-red-500 text-white py-3"
         >
-          Sign In With Google
+          Google Login
         </button>
 
       </form>

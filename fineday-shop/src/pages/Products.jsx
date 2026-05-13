@@ -1,63 +1,47 @@
-import {
-  useEffect,
-  useState
-} from "react";
-
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 import ProductCard from "../components/ProductCard";
-
 import Cart from "../components/Cart";
-
 import SearchBar from "../components/SearchBar";
 
 function Products() {
 
-  const [products, setProducts] =
-    useState([]);
+  const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [search, setSearch] = useState("");
+  const [bought, setBought] = useState([]);
 
-  const [cart, setCart] =
-    useState([]);
-
-  const [search, setSearch] =
-    useState("");
-
-  const [loading, setLoading] =
-    useState(true);
-
+  // FETCH PRODUCTS
   useEffect(() => {
-
     fetchProducts();
-
   }, []);
 
   const fetchProducts = async () => {
 
     try {
 
-      const response =
-        await axios.get(
-          "http://localhost:3001/products"
-        );
+      const response = await axios.get(
+        "http://localhost:3001/products"
+      );
 
-      console.log(response.data);
+      console.log("DB PRODUCTS:", response.data);
 
       setProducts(response.data);
 
     } catch (error) {
 
-      console.log(error);
-
-    } finally {
-
-      setLoading(false);
+      console.log(
+        "FETCH ERROR:",
+        error.message
+      );
     }
   };
 
-  const addToCart = async (
-    product
-  ) => {
+  // ADD TO CART
+  const addToCart = async (product) => {
 
+    // STOP IF OUT OF STOCK
     if (product.quantity <= 0) {
 
       alert("Out of stock");
@@ -65,86 +49,129 @@ function Products() {
       return;
     }
 
-    await axios.patch(
-      `http://localhost:3001/products/${product.id}`,
-      {
-        quantity:
-          product.quantity - 1
-      }
-    );
-
-    setCart([
-      ...cart,
+    // ADD ITEM TO CART
+    setCart((prevCart) => [
+      ...prevCart,
       product
     ]);
 
+    // UPDATE UI IMMEDIATELY
+    setProducts((prevProducts) =>
+      prevProducts.map((item) =>
+        item.id === product.id
+          ? {
+              ...item,
+              quantity: item.quantity - 1
+            }
+          : item
+      )
+    );
+
+    // UPDATE DB.JSON SILENTLY
+    try {
+
+      await axios.patch(
+        `http://localhost:3001/products/${product.id}`,
+        {
+          quantity: product.quantity - 1
+        }
+      );
+
+    } catch (error) {
+
+      console.log(
+        "PATCH ERROR:",
+        error.message
+      );
+    }
+  };
+
+  // BUY NOW
+  const buyItems = () => {
+
+    if (cart.length === 0) {
+
+      alert("Cart is empty");
+
+      return;
+    }
+
+    alert(
+      "Purchase Successful!"
+    );
+
+    // SAVE PURCHASE HISTORY
+    setBought((prev) => [
+      ...prev,
+      ...cart
+    ]);
+
+    // CLEAR CART
+    setCart([]);
+
+    // OPTIONAL REFRESH
     fetchProducts();
   };
 
-  const filteredProducts =
-    products.filter((product) =>
-      product.name
-        .toLowerCase()
-        .includes(
-          search.toLowerCase()
-        )
-    );
-
-  if (loading) {
-
-    return (
-      <h1 className="text-4xl p-8">
-        Loading Products...
-      </h1>
-    );
-  }
+  // SEARCH FILTER
+  const filtered = products.filter((product) =>
+    product.name
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
 
   return (
 
     <div className="p-8 bg-gray-100 min-h-screen">
 
+      {/* TITLE */}
       <h1 className="text-5xl font-bold mb-6">
         Products
       </h1>
 
+      {/* SEARCH */}
       <SearchBar
         search={search}
         setSearch={setSearch}
       />
 
-      {filteredProducts.length === 0 ? (
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
-        <h1 className="text-3xl">
-          No Products Found
-        </h1>
+        {/* PRODUCTS */}
+        <div className="lg:col-span-3">
 
-      ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {filtered.length > 0 ? (
 
-          <div className="lg:col-span-3">
+              filtered.map((product) => (
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  addToCart={addToCart}
+                />
+              ))
 
-              {filteredProducts.map(
-                (product) => (
+            ) : (
 
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    addToCart={addToCart}
-                  />
-                )
-              )}
-
-            </div>
+              <p className="text-xl text-gray-500">
+                No products found...
+              </p>
+            )}
 
           </div>
 
-          <Cart cart={cart} />
-
         </div>
-      )}
+
+        {/* CART */}
+        <Cart
+          cart={cart}
+          bought={bought}
+          handleBuy={buyItems}
+        />
+
+      </div>
 
     </div>
   );
