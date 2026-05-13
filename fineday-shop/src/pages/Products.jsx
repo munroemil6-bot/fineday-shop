@@ -1,0 +1,78 @@
+import { useEffect, useState } from "react";
+
+import API from "../services/api";
+import ProductCard from "../components/ProductCard";
+
+function Products() {
+  const [products, setProducts] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    const response = await API.get("/products");
+    setProducts(response.data);
+  };
+
+  const addToCart = async (product) => {
+    if (product.quantity <= 0) {
+      alert("Out of stock");
+      return;
+    }
+
+    const updatedQuantity = product.quantity - 1;
+
+    await API.patch(`/products/${product.id}`, {
+      quantity: updatedQuantity
+    });
+
+    setCart([...cart, product]);
+
+    fetchProducts();
+  };
+
+  const filteredProducts = products.filter((product) =>
+    product.name
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
+
+  const total = cart.reduce(
+    (sum, item) => sum + item.price,
+    0
+  );
+
+  return (
+    <div className="p-8 bg-gray-100 min-h-screen">
+      <h1 className="text-5xl font-bold mb-6">
+        Products
+      </h1>
+
+      <input
+        type="text"
+        placeholder="Search products..."
+        className="w-full p-3 rounded-lg mb-6 border"
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      <h2 className="text-3xl mb-6">
+        Cart Total: Ksh {total}
+      </h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {filteredProducts.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            addToCart={addToCart}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default Products;
