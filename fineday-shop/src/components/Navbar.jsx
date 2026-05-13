@@ -7,7 +7,7 @@ function Navbar() {
     <nav className="bg-black text-white p-4 flex justify-between">
 
       <h1 className="text-2xl font-bold">
-        FineDay Shop
+        Fineday General Store
       </h1>
 
       <div className="flex gap-6">

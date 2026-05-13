@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
 import ProductCard from "../components/ProductCard";
 import Cart from "../components/Cart";
 import SearchBar from "../components/SearchBar";
 
 function Products() {
-
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [search, setSearch] = useState("");
-  const [bought, setBought] = useState([]);
 
   // FETCH PRODUCTS
   useEffect(() => {
@@ -18,165 +15,179 @@ function Products() {
   }, []);
 
   const fetchProducts = async () => {
+      try {
+        const response =
+          await axios.get(
+            "http://localhost:3001/products"
+          );
 
-    try {
+        setProducts(
+          response.data
+        );
 
-      const response = await axios.get(
-        "http://localhost:3001/products"
-      );
+      } catch (error) {
 
-      console.log("DB PRODUCTS:", response.data);
-
-      setProducts(response.data);
-
-    } catch (error) {
-
-      console.log(
-        "FETCH ERROR:",
-        error.message
-      );
-    }
-  };
+        console.log(error);
+      }
+    };
 
   // ADD TO CART
- const addToCart = async (product) => {
+  const addToCart = async (product) => {
+      // OUT OF STOCK
+      if (
+        product.quantity <= 0
+      ) {
 
-  // OUT OF STOCK
-  if (product.quantity <= 0) {
+        alert(
+          "Out of stock"
+        );
 
-    alert("Out of stock");
+        return;
+      }
 
-    return;
-  }
+      // UPDATE CART
+      setCart((prevCart) => {
 
-  // UPDATE CART
-  setCart((prevCart) => {
+        const existingItem =
+          prevCart.find(
+            (item) =>
+              item.id ===
+              product.id
+          );
 
-    const existingItem =
-      prevCart.find(
-        (item) => item.id === product.id
+        // IF EXISTS
+        if (existingItem) {
+
+          return prevCart.map(
+            (item) =>
+
+              item.id ===
+              product.id
+
+                ? {
+                    ...item,
+
+                    cartQuantity:
+                      item.cartQuantity + 1
+                  }
+
+                : item
+          );
+        }
+
+        // NEW ITEM
+        return [
+          ...prevCart,
+          {
+            ...product,
+            cartQuantity: 1
+          }
+        ];
+      });
+
+      // UPDATE PRODUCTS UI
+      setProducts(
+        (prevProducts) =>
+
+          prevProducts.map(
+            (item) =>
+
+              item.id ===
+              product.id
+
+                ? {
+                    ...item,
+                    quantity:
+                      item.quantity - 1
+                  }
+
+                : item
+          )
       );
 
-    // IF ITEM EXISTS
-    if (existingItem) {
+      // UPDATE DB.JSON
+      try {
 
-      return prevCart.map((item) =>
+        await axios.patch(
+          `http://localhost:3001/products/${product.id}`,
+          {
+            quantity:
+              product.quantity - 1
+          }
+        );
 
-        item.id === product.id
-          ? {
-              ...item,
-              quantityInCart:
-                item.quantityInCart + 1
-            }
-          : item
+      } catch (error) {
+
+        console.log(error);
+      }
+    };
+
+  // BUY ITEMS
+  const handleBuy = () => {
+
+    if (cart.length === 0) {
+
+      alert(
+        "Cart is empty"
       );
+
+      return;
     }
 
-    // NEW ITEM
-    return [
-      ...prevCart,
-      {
-        ...product,
-        quantityInCart: 1
-      }
-    ];
-  });
+    // TOTAL
+    const total =
+      cart.reduce(
 
-  // UPDATE ONLY THE CLICKED PRODUCT
-  setProducts((prevProducts) =>
+        (sum, item) =>
 
-    prevProducts.map((item) =>
+          sum +
+          (
+            item.price *
+            item.cartQuantity
+          ),
 
-      item.id === product.id
-        ? {
-            ...item,
-            quantity:
-              item.quantity - 1
-          }
-        : item
-    )
-  );
+        0
+      );
 
-  // UPDATE DB.JSON
-  try {
+    // ITEMS
+    const items =
+      cart.map(
+        (item) =>
 
-    await axios.patch(
-      `http://localhost:3001/products/${product.id}`,
-      {
-        quantity:
-          product.quantity - 1
-      }
-    );
+            `${item.name}
+    x${item.cartQuantity}
+    - Ksh ${
+                item.price *
+                item.cartQuantity
+            }`
+        ).join("\n");
 
-  } catch (error) {
+        // POPUP
+        alert(
 
-    console.log(
-      "PATCH ERROR:",
-      error.message
-    );
-  }
-};
+    `Purchase Successful!
 
-  // BUY NOW
-  const buyItems = () => {
+    ${items}
 
-  if (cart.length === 0) {
+    TOTAL:
+    Ksh ${total}`
+        );
 
-    alert("Cart is empty");
-
-    return;
-  }
-
-  // CALCULATE TOTAL
-  const total = cart.reduce(
-
-    (sum, item) =>
-
-      sum +
-      (
-        item.price *
-        item.quantityInCart
-      ),
-
-    0
-  );
-
-  // ITEMS LIST
-  const itemsBought = cart.map(
-
-    (item) =>
-
-      `${item.name}
-x${item.quantityInCart}
-- Ksh ${
-        item.price *
-        item.quantityInCart
-      }`
-
-  ).join("\n");
-
-  // POPUP
-  alert(
-
-`Purchase Successful!
-
-Items Bought:
-${itemsBought}
-
-Total Amount:
-Ksh ${total}`
-  );
-
-  // CLEAR CART ONLY
-  setCart([]);
-};
+        // CLEAR CART ONLY
+        setCart([]);
+    };
 
   // SEARCH FILTER
-  const filtered = products.filter((product) =>
-    product.name
-      .toLowerCase()
-      .includes(search.toLowerCase())
-  );
+  const filteredProducts =
+    products.filter(
+      (product) =>
+
+        product.name
+          .toLowerCase()
+          .includes(
+            search.toLowerCase()
+          )
+    );
 
   return (
 
@@ -200,22 +211,15 @@ Ksh ${total}`
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-            {filtered.length > 0 ? (
-
-              filtered.map((product) => (
+            {filteredProducts.map(
+              (product) => (
 
                 <ProductCard
                   key={product.id}
                   product={product}
                   addToCart={addToCart}
                 />
-              ))
-
-            ) : (
-
-              <p className="text-xl text-gray-500">
-                No products found...
-              </p>
+              )
             )}
 
           </div>
@@ -225,8 +229,7 @@ Ksh ${total}`
         {/* CART */}
         <Cart
           cart={cart}
-          bought={bought}
-          handleBuy={buyItems}
+          handleBuy={handleBuy}
         />
 
       </div>
