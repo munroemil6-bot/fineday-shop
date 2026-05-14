@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../services/api";
 
 import ProductCard from "../components/ProductCard";
 import Cart from "../components/Cart";
@@ -11,22 +11,11 @@ function Products() {
   const [cart, setCart] = useState([]);
   const [search, setSearch] = useState("");
 
-  // FETCH PRODUCTS
-  useEffect(() => {
-
-    fetchProducts();
-
-  }, []);
-
   const fetchProducts = async () => {
 
     try {
 
-      const response = await axios.get(
-        "http://localhost:3001/products"
-      );
-
-      console.log(response.data);
+      const response = await API.get("/products");
 
       setProducts(response.data);
 
@@ -35,6 +24,15 @@ function Products() {
       console.log(error);
     }
   };
+
+  // FETCH PRODUCTS
+  useEffect(() => {
+    const loadProducts = async () => {
+      await fetchProducts();
+    };
+
+    loadProducts();
+  }, []);
 
   // ADD TO CART
   const addToCart = async (product) => {
@@ -99,8 +97,8 @@ function Products() {
     // UPDATE DB.JSON
     try {
 
-      await axios.patch(
-        `http://localhost:3001/products/${product.id}`,
+      await API.patch(
+        `/products/${product.id}`,
         {
           quantity: product.quantity - 1
         }

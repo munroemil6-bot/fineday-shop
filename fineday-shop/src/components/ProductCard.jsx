@@ -1,271 +1,41 @@
-import {
-  useEffect,
-  useState
-} from "react";
-
-import axios from "axios";
-
-import ProductCard
-from "../components/ProductCard";
-
-import Cart
-from "../components/Cart";
-
-import SearchBar
-from "../components/SearchBar";
-
-function Products() {
-
-  const [products, setProducts] =
-    useState([]);
-
-  const [cart, setCart] =
-    useState([]);
-
-  const [search, setSearch] =
-    useState("");
-
-  // FETCH DB.JSON ONLY ONCE
-  useEffect(() => {
-
-    const fetchProducts =
-      async () => {
-
-        try {
-
-          const response =
-            await axios.get(
-              "http://localhost:3001/products"
-            );
-
-          setProducts(
-            response.data
-          );
-
-        } catch (error) {
-
-          console.log(error);
-        }
-      };
-
-    fetchProducts();
-
-  }, []);
-
-  // ADD TO CART
-  const addToCart =
-    async (product) => {
-
-      // STOP OUT OF STOCK
-      if (
-        product.quantity <= 0
-      ) {
-
-        alert(
-          "Out of stock"
-        );
-
-        return;
-      }
-
-      // UPDATE CART ONLY
-      setCart((prevCart) => {
-
-        const existing =
-          prevCart.find(
-            (item) =>
-              item.id ===
-              product.id
-          );
-
-        // INCREASE CART QUANTITY
-        if (existing) {
-
-          return prevCart.map(
-            (item) =>
-
-              item.id ===
-              product.id
-
-                ? {
-                    ...item,
-                    cartQuantity:
-                      item.cartQuantity + 1
-                  }
-
-                : item
-          );
-        }
-
-        // ADD NEW ITEM
-        return [
-          ...prevCart,
-          {
-            ...product,
-            cartQuantity: 1
-          }
-        ];
-      });
-
-      // UPDATE PRODUCT UI
-      setProducts(
-        (prevProducts) =>
-
-          prevProducts.map(
-            (item) =>
-
-              item.id ===
-              product.id
-
-                ? {
-                    ...item,
-                    quantity:
-                      item.quantity - 1
-                  }
-
-                : item
-          )
-      );
-
-      // UPDATE DB.JSON SILENTLY
-      try {
-
-        await axios.patch(
-          `http://localhost:3001/products/${product.id}`,
-          {
-            quantity:
-              product.quantity - 1
-          }
-        );
-
-      } catch (error) {
-
-        console.log(error);
-      }
-    };
-
-  // BUY
-  const handleBuy = () => {
-
-    if (cart.length === 0) {
-
-      alert(
-        "Cart is empty"
-      );
-
-      return;
-    }
-
-    // ITEMS LIST
-    const itemList =
-      cart.map((item) =>
-
-        `${item.name}
-x${item.cartQuantity}`
-      ).join("\n");
-
-    // TOTAL ITEMS
-    const totalItems =
-      cart.reduce(
-        (sum, item) =>
-
-          sum +
-          item.cartQuantity,
-
-        0
-      );
-
-    // TOTAL PRICE
-    const totalPrice =
-      cart.reduce(
-        (sum, item) =>
-
-          sum +
-          (
-            item.price *
-            item.cartQuantity
-          ),
-
-        0
-      );
-
-    // POPUP
-    alert(
-
-`Purchase Successful!
-
-Items Bought:
-${itemList}
-
-Total Items:
-${totalItems}
-
-Total Price:
-Ksh ${totalPrice}`
-    );
-
-    // CLEAR CART ONLY
-    setCart([]);
-  };
-
-  // SEARCH
-  const filteredProducts =
-    products.filter((product) =>
-
-      product.name
-        .toLowerCase()
-        .includes(
-          search.toLowerCase()
-        )
-    );
-
+function ProductCard({ product, addToCart }) {
   return (
-
-    <div className="p-8 bg-gray-100 min-h-screen">
-
-      {/* TITLE */}
-      <h1 className="text-5xl font-bold mb-6">
-        Products
-      </h1>
-
-      {/* SEARCH */}
-      <SearchBar
-        search={search}
-        setSearch={setSearch}
+    <div className="bg-white rounded-xl shadow-md overflow-hidden">
+      <img
+        src={product.image}
+        alt={product.name}
+        className="h-52 w-full object-cover"
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="p-4">
+        <h3 className="text-xl font-semibold mb-2">
+          {product.name}
+        </h3>
 
-        {/* PRODUCTS */}
-        <div className="lg:col-span-3">
+        <p className="text-gray-600 mb-1">
+          Price: Ksh {product.price}
+        </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <p className="text-gray-600 mb-4">
+          In stock: {product.quantity}
+        </p>
 
-            {filteredProducts.map(
-              (product) => (
-
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  addToCart={addToCart}
-                />
-              )
-            )}
-
-          </div>
-
-        </div>
-
-        {/* CART */}
-        <Cart
-          cart={cart}
-          handleBuy={handleBuy}
-        />
-
+        <button
+          onClick={() => addToCart(product)}
+          disabled={product.quantity <= 0}
+          className={`w-full py-3 rounded-lg text-white transition ${
+            product.quantity > 0
+              ? "bg-blue-600 hover:bg-blue-700"
+              : "bg-gray-400 cursor-not-allowed"
+          }`}
+        >
+          {product.quantity > 0
+            ? "Add to Cart"
+            : "Out of Stock"}
+        </button>
       </div>
-
     </div>
   );
 }
 
-export default Products;
+export default ProductCard;

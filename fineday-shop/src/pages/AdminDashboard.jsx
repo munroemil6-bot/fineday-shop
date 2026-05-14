@@ -39,13 +39,6 @@ function AdminDashboard() {
   const navigate =
     useNavigate();
 
-  // FETCH PRODUCTS
-  useEffect(() => {
-
-    fetchProducts();
-
-  }, []);
-
   const fetchProducts =
     async () => {
 
@@ -71,6 +64,15 @@ function AdminDashboard() {
         );
       }
     };
+
+  // FETCH PRODUCTS
+  useEffect(() => {
+    const loadProducts = async () => {
+      await fetchProducts();
+    };
+
+    loadProducts();
+  }, []);
 
   // UPDATE PRICE
     const updatePrice =
