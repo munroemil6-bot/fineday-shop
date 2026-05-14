@@ -1,18 +1,245 @@
-# React + Vite
+# FineDay Shop
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+FineDay Shop is a React + Vite shopping application that allows users to browse products, add items to cart, and purchase products while an admin manages inventory through a protected dashboard.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+# Features
 
-## React Compiler
+## Customer Features
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- View products from db.json
+- Search products
+- Add items to cart
+- View cart totals automatically
+- Buy products
+- Real-time quantity updates
+- Purchase popup summary
 
-Note: This will impact Vite dev & build performances.
+---
 
-## Expanding the ESLint configuration
+## Admin Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Firebase Admin Login
+- Protected Admin Dashboard
+- Edit product prices
+- Edit product quantities
+- Add new products
+- Delete products
+- Logout functionality
+
+---
+
+# Technologies Used
+
+- React
+- Vite
+- Tailwind CSS
+- Axios
+- Firebase Authentication
+- JSON Server
+- React Router DOM
+
+---
+
+# Project Structure
+
+```bash
+src/
+│
+├── components/
+│   ├── Cart.jsx
+│   ├── Navbar.jsx
+│   ├── ProductCard.jsx
+│   ├── ProtectedRoute.jsx
+│   └── SearchBar.jsx
+│
+├── pages/
+│   ├── AddProduct.jsx
+│   ├── AdminDashboard.jsx
+│   ├── AdminLogin.jsx
+│   ├── Home.jsx
+│   └── Products.jsx
+│
+├── services/
+│   └── firebase.js
+│
+├── App.jsx
+├── main.jsx
+└── index.css
+```
+
+---
+
+# Installation
+
+## 1. Clone Repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/fineday-shop.git
+```
+
+---
+
+## 2. Open Project
+
+```bash
+cd fineday-shop
+```
+
+---
+
+## 3. Install Dependencies
+
+```bash
+npm install
+```
+
+---
+
+# Required Packages
+
+```bash
+npm install axios react-router-dom firebase
+```
+
+---
+
+# Start React App
+
+```bash
+npm run dev
+```
+
+---
+
+# Start JSON Server
+
+Open another terminal and run:
+
+```bash
+npx json-server --watch db.json --port 3001
+```
+
+---
+
+# Firebase Setup
+
+Create a Firebase project and enable:
+
+- Authentication
+- Email/Password Login
+
+Then add your Firebase configuration inside:
+
+```bash
+src/services/firebase.js
+```
+
+Example:
+
+```js
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_ID",
+  appId: "YOUR_APP_ID"
+};
+```
+
+---
+
+# Admin Login
+
+Current Admin Credentials:
+
+```bash
+Email:
+fineday@gmail.com
+
+Password:
+finedayshopping
+```
+
+---
+
+# Example db.json
+
+```json
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Bread",
+      "price": 80,
+      "quantity": 10,
+      "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff"
+    }
+  ]
+}
+```
+
+---
+
+# Future Upgrades
+
+## Planned Features
+
+- Mpesa payment integration
+- Stripe payment gateway
+- Card payment support
+- Automatic change calculator
+- Receipt generation
+- Order history
+- User authentication
+- Product categories
+- Product ratings and reviews
+- Wishlist feature
+- Dark mode
+- Mobile responsiveness improvements
+- Database migration from JSON Server to Firebase Firestore
+- Real-time stock synchronization
+- Sales analytics dashboard
+- Email purchase confirmations
+
+---
+
+# Example Future Change Calculator
+
+```js
+const total = 350;
+const paid = 500;
+
+const change = paid - total;
+
+console.log(`Change: Ksh ${change}`);
+```
+
+---
+
+# Learning Objectives
+
+This project demonstrates:
+
+- React component structure
+- State management
+- API requests using Axios
+- Firebase authentication
+- CRUD operations
+- Protected routes
+- JSON Server integration
+- Real-time UI updates
+
+---
+
+# Author
+
+Developed by Myles Munroe
+
+---
+
+# License
+
+This project is for educational purposes.

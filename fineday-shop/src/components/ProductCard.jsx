@@ -1,52 +1,271 @@
-function ProductCard({
-  product,
-  addToCart
-}) {
+import {
+  useEffect,
+  useState
+} from "react";
+
+import axios from "axios";
+
+import ProductCard
+from "../components/ProductCard";
+
+import Cart
+from "../components/Cart";
+
+import SearchBar
+from "../components/SearchBar";
+
+function Products() {
+
+  const [products, setProducts] =
+    useState([]);
+
+  const [cart, setCart] =
+    useState([]);
+
+  const [search, setSearch] =
+    useState("");
+
+  // FETCH DB.JSON ONLY ONCE
+  useEffect(() => {
+
+    const fetchProducts =
+      async () => {
+
+        try {
+
+          const response =
+            await axios.get(
+              "http://localhost:3001/products"
+            );
+
+          setProducts(
+            response.data
+          );
+
+        } catch (error) {
+
+          console.log(error);
+        }
+      };
+
+    fetchProducts();
+
+  }, []);
+
+  // ADD TO CART
+  const addToCart =
+    async (product) => {
+
+      // STOP OUT OF STOCK
+      if (
+        product.quantity <= 0
+      ) {
+
+        alert(
+          "Out of stock"
+        );
+
+        return;
+      }
+
+      // UPDATE CART ONLY
+      setCart((prevCart) => {
+
+        const existing =
+          prevCart.find(
+            (item) =>
+              item.id ===
+              product.id
+          );
+
+        // INCREASE CART QUANTITY
+        if (existing) {
+
+          return prevCart.map(
+            (item) =>
+
+              item.id ===
+              product.id
+
+                ? {
+                    ...item,
+                    cartQuantity:
+                      item.cartQuantity + 1
+                  }
+
+                : item
+          );
+        }
+
+        // ADD NEW ITEM
+        return [
+          ...prevCart,
+          {
+            ...product,
+            cartQuantity: 1
+          }
+        ];
+      });
+
+      // UPDATE PRODUCT UI
+      setProducts(
+        (prevProducts) =>
+
+          prevProducts.map(
+            (item) =>
+
+              item.id ===
+              product.id
+
+                ? {
+                    ...item,
+                    quantity:
+                      item.quantity - 1
+                  }
+
+                : item
+          )
+      );
+
+      // UPDATE DB.JSON SILENTLY
+      try {
+
+        await axios.patch(
+          `http://localhost:3001/products/${product.id}`,
+          {
+            quantity:
+              product.quantity - 1
+          }
+        );
+
+      } catch (error) {
+
+        console.log(error);
+      }
+    };
+
+  // BUY
+  const handleBuy = () => {
+
+    if (cart.length === 0) {
+
+      alert(
+        "Cart is empty"
+      );
+
+      return;
+    }
+
+    // ITEMS LIST
+    const itemList =
+      cart.map((item) =>
+
+        `${item.name}
+x${item.cartQuantity}`
+      ).join("\n");
+
+    // TOTAL ITEMS
+    const totalItems =
+      cart.reduce(
+        (sum, item) =>
+
+          sum +
+          item.cartQuantity,
+
+        0
+      );
+
+    // TOTAL PRICE
+    const totalPrice =
+      cart.reduce(
+        (sum, item) =>
+
+          sum +
+          (
+            item.price *
+            item.cartQuantity
+          ),
+
+        0
+      );
+
+    // POPUP
+    alert(
+
+`Purchase Successful!
+
+Items Bought:
+${itemList}
+
+Total Items:
+${totalItems}
+
+Total Price:
+Ksh ${totalPrice}`
+    );
+
+    // CLEAR CART ONLY
+    setCart([]);
+  };
+
+  // SEARCH
+  const filteredProducts =
+    products.filter((product) =>
+
+      product.name
+        .toLowerCase()
+        .includes(
+          search.toLowerCase()
+        )
+    );
 
   return (
 
-    <div className="bg-white p-4 rounded-xl shadow-lg">
+    <div className="p-8 bg-gray-100 min-h-screen">
 
-      {/* IMAGE */}
-      <img
-        src={product.image}
-        alt={product.name}
-        className="w-full h-48 object-cover rounded-lg"
-        onError={(e) => {
-          e.target.src =
-            "https://via.placeholder.com/300";
-        }}
+      {/* TITLE */}
+      <h1 className="text-5xl font-bold mb-6">
+        Products
+      </h1>
+
+      {/* SEARCH */}
+      <SearchBar
+        search={search}
+        setSearch={setSearch}
       />
 
-      {/* NAME */}
-      <h2 className="text-2xl font-bold mt-4">
-        {product.name}
-      </h2>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
-      {/* PRICE */}
-      <p className="text-lg">
-        Ksh {product.price}
-      </p>
+        {/* PRODUCTS */}
+        <div className="lg:col-span-3">
 
-      {/* QUANTITY */}
-      <p>
-        Quantity:
-        {" "}
-        {product.quantity}
-      </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-      {/* BUTTON */}
-      <button
-        onClick={() =>
-          addToCart(product)
-        }
-        className="mt-4 bg-black text-white w-full py-2 rounded-lg hover:bg-gray-800"
-      >
-        Add To Cart
-      </button>
+            {filteredProducts.map(
+              (product) => (
+
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  addToCart={addToCart}
+                />
+              )
+            )}
+
+          </div>
+
+        </div>
+
+        {/* CART */}
+        <Cart
+          cart={cart}
+          handleBuy={handleBuy}
+        />
+
+      </div>
 
     </div>
   );
 }
 
-export default ProductCard;
+export default Products;
