@@ -236,13 +236,51 @@ function AdminDashboard() {
 
   return (
 
-    <div className="p-8 bg-gray-100 min-h-screen">
+  <div className="bg-black min-h-screen text-white">
+
+    {/* HEADER IMAGE */}
+    <div
+      className="
+        h-[300px]
+        bg-cover
+        bg-center
+        relative
+        flex
+        items-center
+        justify-center
+      "
+      style={{
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1556740749-887f6717d7e4')"
+      }}
+    >
+
+      {/* DARK OVERLAY */}
+      <div className="absolute inset-0 bg-black/60"></div>
+
+      {/* HEADER TEXT */}
+      <div className="relative z-10 text-center">
+
+        <h1 className="text-6xl font-bold text-white">
+          Fine Day
+        </h1>
+
+        <p className="text-xl mt-4 text-gray-200">
+          Admin Dashboard
+        </p>
+
+      </div>
+
+    </div>
+
+    {/* MAIN CONTENT */}
+    <div className="p-8">
 
       {/* TOP */}
       <div className="flex justify-between items-center mb-8">
 
         <h1 className="text-4xl font-bold">
-          Admin Dashboard
+          Manage Products
         </h1>
 
         <div className="flex gap-4">
@@ -254,7 +292,15 @@ function AdminDashboard() {
                 !showForm
               )
             }
-            className="bg-green-600 text-white px-5 py-2 rounded-lg text-xl"
+            className="
+              bg-green-600
+              hover:bg-green-700
+              text-white
+              px-5
+              py-2
+              rounded-lg
+              text-xl
+            "
           >
             +
           </button>
@@ -262,7 +308,14 @@ function AdminDashboard() {
           {/* LOGOUT */}
           <button
             onClick={handleLogout}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg"
+            className="
+              bg-red-600
+              hover:bg-red-700
+              text-white
+              px-4
+              py-2
+              rounded-lg
+            "
           >
             Sign Out
           </button>
@@ -275,11 +328,17 @@ function AdminDashboard() {
       {showForm && (
 
         <form
-        onSubmit={(e) => {
+          onSubmit={(e) => {
             e.preventDefault();
             addProduct(e);
-        }}
-         className="bg-white p-6 rounded-xl shadow-lg mb-8"
+          }}
+          className="
+            bg-gray-900
+            p-6
+            rounded-xl
+            shadow-lg
+            mb-8
+          "
         >
 
           <h2 className="text-2xl font-bold mb-4">
@@ -295,7 +354,16 @@ function AdminDashboard() {
                 e.target.value
               )
             }
-            className="border p-3 rounded-lg w-full mb-4"
+            className="
+              border
+              border-gray-700
+              bg-black
+              text-white
+              p-3
+              rounded-lg
+              w-full
+              mb-4
+            "
           />
 
           <input
@@ -307,7 +375,16 @@ function AdminDashboard() {
                 e.target.value
               )
             }
-            className="border p-3 rounded-lg w-full mb-4"
+            className="
+              border
+              border-gray-700
+              bg-black
+              text-white
+              p-3
+              rounded-lg
+              w-full
+              mb-4
+            "
           />
 
           <input
@@ -319,7 +396,16 @@ function AdminDashboard() {
                 e.target.value
               )
             }
-            className="border p-3 rounded-lg w-full mb-4"
+            className="
+              border
+              border-gray-700
+              bg-black
+              text-white
+              p-3
+              rounded-lg
+              w-full
+              mb-4
+            "
           />
 
           <input
@@ -331,11 +417,28 @@ function AdminDashboard() {
                 e.target.value
               )
             }
-            className="border p-3 rounded-lg w-full mb-4"
+            className="
+              border
+              border-gray-700
+              bg-black
+              text-white
+              p-3
+              rounded-lg
+              w-full
+              mb-4
+            "
           />
 
           <button
-            className="bg-black text-white px-6 py-3 rounded-lg"
+            className="
+              bg-white
+              text-black
+              px-6
+              py-3
+              rounded-lg
+              font-bold
+              hover:bg-gray-200
+            "
           >
             Add Product
           </button>
@@ -352,13 +455,23 @@ function AdminDashboard() {
 
             <div
               key={product.id}
-              className="bg-white p-4 rounded-xl shadow-lg"
+              className="
+                bg-gray-900
+                p-4
+                rounded-xl
+                shadow-lg
+              "
             >
 
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-full h-48 object-cover rounded-lg"
+                className="
+                  w-full
+                  h-48
+                  object-cover
+                  rounded-lg
+                "
               />
 
               <h2 className="text-2xl font-bold mt-4">
@@ -381,7 +494,17 @@ function AdminDashboard() {
                     e.target.value
                   )
                 }
-                className="border p-2 rounded-lg w-full mt-2 mb-4"
+                className="
+                  border
+                  border-gray-700
+                  bg-black
+                  text-white
+                  p-2
+                  rounded-lg
+                  w-full
+                  mt-2
+                  mb-4
+                "
               />
 
               {/* QUANTITY */}
@@ -400,7 +523,16 @@ function AdminDashboard() {
                     e.target.value
                   )
                 }
-                className="border p-2 rounded-lg w-full mt-2"
+                className="
+                  border
+                  border-gray-700
+                  bg-black
+                  text-white
+                  p-2
+                  rounded-lg
+                  w-full
+                  mt-2
+                "
               />
 
               {/* DELETE */}
@@ -410,7 +542,16 @@ function AdminDashboard() {
                     product.id
                   )
                 }
-                className="mt-4 bg-red-600 text-white px-4 py-2 rounded-lg w-full"
+                className="
+                  mt-4
+                  bg-red-600
+                  hover:bg-red-700
+                  text-white
+                  px-4
+                  py-2
+                  rounded-lg
+                  w-full
+                "
               >
                 Delete Product
               </button>
@@ -420,7 +561,7 @@ function AdminDashboard() {
 
         ) : (
 
-          <h1 className="text-2xl">
+          <h1 className="text-2xl text-gray-300">
             No Products Found
           </h1>
         )}
@@ -428,7 +569,9 @@ function AdminDashboard() {
       </div>
 
     </div>
-  );
+
+  </div>
+);
 }
 
 export default AdminDashboard;

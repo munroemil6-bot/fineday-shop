@@ -21,7 +21,11 @@ function ProductCard({ product, addToCart }) {
         </p>
 
         <button
-          onClick={() => addToCart(product)}
+          type="button"
+          onClick={(event) => {
+            event.preventDefault();
+            addToCart(product);
+          }}
           disabled={product.quantity <= 0}
           className={`w-full py-3 rounded-lg text-white transition ${
             product.quantity > 0

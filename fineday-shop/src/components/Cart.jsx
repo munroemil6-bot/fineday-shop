@@ -1,6 +1,7 @@
 function Cart({
   cart,
-  handleBuy
+  handleBuy,
+  removeFromCart
 }) {
 
   // TOTAL
@@ -43,9 +44,21 @@ function Cart({
             className="border-b py-3"
           >
 
-            <p className="font-bold">
-              {item.name}
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="font-bold">
+                {item.name}
+              </p>
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.preventDefault();
+                  removeFromCart(item.id);
+                }}
+                className="text-red-600 hover:text-red-800 text-sm"
+              >
+                Remove
+              </button>
+            </div>
 
             <p>
               Quantity:
@@ -87,6 +100,7 @@ function Cart({
 
       {/* BUY */}
       <button
+        type="button"
         onClick={handleBuy}
         className="mt-4 w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700"
       >
