@@ -28,6 +28,12 @@ function Cart({
         Cart
       </h2>
 
+      {cart.length > 0 && (
+        <p className="text-sm text-gray-500 mb-4">
+          Total items: {cart.reduce((sum, item) => sum + item.cartQuantity, 0)}
+        </p>
+      )}
+
       {/* EMPTY */}
       {cart.length === 0 ? (
 
@@ -52,6 +58,7 @@ function Cart({
                 type="button"
                 onClick={(event) => {
                   event.preventDefault();
+                  event.stopPropagation();
                   removeFromCart(item.id);
                 }}
                 className="text-red-600 hover:text-red-800 text-sm"
@@ -101,7 +108,11 @@ function Cart({
       {/* BUY */}
       <button
         type="button"
-        onClick={handleBuy}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          handleBuy(event);
+        }}
         className="mt-4 w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700"
       >
         Buy Now

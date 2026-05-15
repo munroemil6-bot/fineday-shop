@@ -11,6 +11,9 @@ function Products() {
   const [cart, setCart] = useState([]);
   const [search, setSearch] = useState("");
   const [receipt, setReceipt] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState("mpesa");
+  const [amountPaid, setAmountPaid] = useState("");
+  const [paymentError, setPaymentError] = useState("");
 
   const fetchProducts = async () => {
 
@@ -159,6 +162,11 @@ function Products() {
       0
     );
 
+    const totalItems = cart.reduce(
+      (sum, item) => sum + item.cartQuantity,
+      0
+    );
+
     const items = cart
       .map(
         (item) =>
@@ -168,15 +176,29 @@ function Products() {
       )
       .join("\n");
 
-    setReceipt({ items, total });
-    setCart([]);
+    setPaymentMethod("mpesa");
+    setAmountPaid("");
+    setPaymentError("");
+    setReceipt({ items, total, totalItems });
   };
 
   const handleFinalizePurchase = () => {
-    if (receipt) {
-      setReceipt(null);
-      window.location.reload();
+    if (!receipt) return;
+
+    if (paymentMethod === "cash") {
+      const paid = Number(amountPaid);
+      if (!paid || paid < receipt.total) {
+        setPaymentError("Enter an amount equal to or greater than the total.");
+        return;
+      }
     }
+
+    // Close modal and clear cart (no page reload needed)
+    setReceipt(null);
+    setCart([]);
+    setAmountPaid("");
+    setPaymentError("");
+    alert("Payment confirmed! Thank you for your purchase.");
   };
 
   // SEARCH
@@ -190,20 +212,11 @@ function Products() {
 
   return (
 
-  <div className="bg-gray-100 min-h-screen">
+   <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 ">
 
     {/* HEADER ONLY */}
     <div
-      className="
-        h-[350px]
-        flex
-        flex-col
-        items-center
-        justify-center
-        bg-cover
-        bg-center
-        relative
-      "
+      className="h-[350px] flex flex-col items-center justify-center bg-cover bg-center relative"
       style={{
         backgroundImage:
           "url('https://images.unsplash.com/photo-1542838132-92c53300491e')"
@@ -272,19 +285,77 @@ function Products() {
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
         <div className="w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl">
           <h2 className="text-2xl font-bold mb-4">
-            Purchase Successful
+            Purchase Options
           </h2>
-          <pre className="whitespace-pre-wrap bg-gray-100 p-4 rounded-lg mb-4">
-            {receipt.items}
+          <div className="bg-gray-100 p-4 rounded-lg mb-4">
+            <p className="font-semibold">Items:</p>
+            <pre className="whitespace-pre-wrap mt-2">{receipt.items}</pre>
+            <p className="mt-4 font-semibold">Total items: {receipt.totalItems}</p>
+            <p className="mt-2 font-semibold">Total: Ksh {receipt.total}</p>
+          </div>
 
-            TOTAL: Ksh {receipt.total}
-          </pre>
+          <div className="space-y-4">
+            <label className="flex items-center gap-3">
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="mpesa"
+                checked={paymentMethod === "mpesa"}
+                onChange={() => {
+                  setPaymentMethod("mpesa");
+                  setPaymentError("");
+                }}
+              />
+              <span>Send money to 0723274962</span>
+            </label>
+
+            <label className="flex items-center gap-3">
+              <input
+                type="radio"
+                name="paymentMethod"
+                value="cash"
+                checked={paymentMethod === "cash"}
+                onChange={() => {
+                  setPaymentMethod("cash");
+                  setPaymentError("");
+                }}
+              />
+              <span>Pay Ksh now</span>
+            </label>
+
+            {paymentMethod === "cash" && (
+              <div className="space-y-2">
+                <label className="block text-sm font-medium">
+                  Amount given
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={amountPaid}
+                  onChange={(e) => {
+                    setAmountPaid(e.target.value);
+                    setPaymentError("");
+                  }}
+                  className="w-full rounded-lg border p-3"
+                  placeholder="Enter amount given"
+                />
+                <p className="text-sm text-gray-600">
+                  Change: Ksh {Math.max(0, Number(amountPaid || 0) - receipt.total)}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {paymentError && (
+            <p className="mt-4 text-sm text-red-600">{paymentError}</p>
+          )}
+
           <button
             type="button"
             onClick={handleFinalizePurchase}
-            className="w-full rounded-lg bg-blue-600 px-4 py-3 text-white hover:bg-blue-700"
+            className="mt-6 w-full rounded-lg bg-blue-600 px-4 py-3 text-white hover:bg-blue-700"
           >
-            Close and Reload
+            Confirm Payment
           </button>
         </div>
       </div>

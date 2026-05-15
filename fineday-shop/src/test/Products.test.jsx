@@ -63,6 +63,6 @@ describe('Products', () => {
     fireEvent.click(removeButton);
 
     expect(screen.queryByText('Quantity: 1')).not.toBeInTheDocument();
-    expect(screen.getByText('In stock: 10')).toBeInTheDocument();
+    expect(screen.getByText('10 Left')).toBeInTheDocument();
   });
 });

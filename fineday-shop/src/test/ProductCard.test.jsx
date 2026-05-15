@@ -16,8 +16,10 @@ describe('ProductCard', () => {
     render(<ProductCard product={mockProduct} addToCart={mockAddToCart} />);
 
     expect(screen.getByText('Bread')).toBeInTheDocument();
-    expect(screen.getByText('Price: Ksh 80')).toBeInTheDocument();
-    expect(screen.getByText('In stock: 10')).toBeInTheDocument();
+    expect(screen.getByText('Price')).toBeInTheDocument();
+    expect(screen.getByText(/Ksh\s*80/)).toBeInTheDocument();
+    expect(screen.getByText('Available')).toBeInTheDocument();
+    expect(screen.getByText('10 Items')).toBeInTheDocument();
     expect(screen.getByAltText('Bread')).toBeInTheDocument();
   });
 

@@ -20,6 +20,7 @@ describe('Cart', () => {
     );
 
     expect(screen.getByText('Cart')).toBeInTheDocument();
+    expect(screen.getByText('Total items: 3')).toBeInTheDocument();
     expect(screen.getByText('Bread')).toBeInTheDocument();
     expect(screen.getByText('Quantity: 2')).toBeInTheDocument();
     expect(screen.getByText('Price: Ksh 80')).toBeInTheDocument();

@@ -4,25 +4,40 @@ function Navbar() {
 
   return (
 
-    <nav className="bg-black text-white p-4 flex justify-between">
+    <nav className="bg-green-700 text-white shadow-lg">
 
-      <h1 className="text-2xl font-bold">
-        Fineday General Store
-      </h1>
+      <div className="flex flex-col items-center justify-center py-4">
 
-      <div className="flex gap-6">
+        {/* STORE NAME */}
+        <h1 className="text-3xl font-extrabold tracking-wide mb-3">
+          Fineday General Store
+        </h1>
 
-        <Link to="/">
-          Home
-        </Link>
+        {/* LINKS */}
+        <div className="flex gap-10 text-lg font-medium">
 
-        <Link to="/products">
-          Products
-        </Link>
+          <Link
+            to="/"
+            className="hover:text-green-200 transition"
+          >
+            Home
+          </Link>
 
-        <Link to="/admin-login">
-          Admin
-        </Link>
+          <Link
+            to="/products"
+            className="hover:text-green-200 transition"
+          >
+            Products
+          </Link>
+
+          <Link
+            to="/admin-login"
+            className="hover:text-green-200 transition"
+          >
+            Admin
+          </Link>
+
+        </div>
 
       </div>
 
