@@ -284,7 +284,7 @@ function AdminDashboard() {
               e.preventDefault();
               addProduct(e);
             }}
-            className="bg-gray-900 p-6 rounded-xl shadow-lg mb-8"
+            className="bg-green-700 p-6 rounded-xl shadow-lg mb-8"
           >
 
             <h2 className="text-2xl font-bold mb-4">
@@ -350,7 +350,7 @@ function AdminDashboard() {
 
               <div
                 key={product.id}
-                className="bg-gray-900 p-4 rounded-xl shadow-lg"
+                className="bg-green-700 p-4 rounded-xl shadow-lg"
               >
 
                 <img
