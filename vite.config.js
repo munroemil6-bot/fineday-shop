@@ -11,5 +11,5 @@ export default defineConfig({
     tailwindcss(),
     babel({ presets: [reactCompilerPreset()] })
   ],
-  base: process.env.NODE_ENV === "production" ? "/fineday-shop/" : "/"
+  base: '/fineday-shop/',
 })
