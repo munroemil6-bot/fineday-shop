@@ -22,6 +22,8 @@ function AdminDashboard() {
 
   const [image, setImage] = useState("");
 
+  const [addQuantities, setAddQuantities] = useState({});
+
   const navigate = useNavigate();
 
   // FETCH PRODUCTS
@@ -87,35 +89,48 @@ function AdminDashboard() {
     }
   };
 
-  // UPDATE QUANTITY
+  // UPDATE QUANTITY BY ADDING NEW AMOUNT
   const updateQuantity = async (id, value) => {
+    const addAmount = Number(value);
+    if (!addAmount || addAmount <= 0) {
+      alert("Please enter a valid amount to add");
+      return;
+    }
+
+    const productToUpdate = products.find(
+      (product) => product.id === id
+    );
+    if (!productToUpdate) return;
+
+    const newQuantity = productToUpdate.quantity + addAmount;
 
     // UPDATE UI
     setProducts((prevProducts) =>
-
       prevProducts.map((product) =>
-
         product.id === id
           ? {
               ...product,
-              quantity: Number(value)
+              quantity: newQuantity
             }
           : product
       )
     );
 
+    // CLEAR add quantity field for this product
+    setAddQuantities((prev) => ({
+      ...prev,
+      [id]: ""
+    }));
+
     // UPDATE DB
     try {
-
       await axios.patch(
         `http://localhost:3001/products/${id}`,
         {
-          quantity: Number(value)
+          quantity: newQuantity
         }
       );
-
     } catch (error) {
-
       console.log(error);
     }
   };
@@ -382,20 +397,48 @@ function AdminDashboard() {
 
                 {/* QUANTITY */}
                 <label className="font-semibold">
-                  Quantity
+                  Current Quantity
                 </label>
 
                 <input
                   type="number"
-                  defaultValue={product.quantity}
-                  onBlur={(e) =>
-                    updateQuantity(
-                      product.id,
-                      e.target.value
-                    )
-                  }
-                  className="border border-gray-700 bg-black text-white p-2 rounded-lg w-full mt-2"
+                  value={product.quantity}
+                  disabled
+                  className="border border-gray-700 bg-gray-900 text-white p-2 rounded-lg w-full mt-2"
                 />
+
+                <label className="font-semibold mt-4 block">
+                  Add Quantity
+                </label>
+
+                <div className="flex gap-2 mt-2">
+                  <input
+                    type="number"
+                    min="0"
+                    value={addQuantities[product.id] ?? ""}
+                    onChange={(e) =>
+                      setAddQuantities((prev) => ({
+                        ...prev,
+                        [product.id]: e.target.value
+                      }))
+                    }
+                    placeholder="Amount to add"
+                    className="border border-gray-700 bg-black text-white p-2 rounded-lg w-full"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      updateQuantity(
+                        product.id,
+                        addQuantities[product.id]
+                      )
+                    }
+                    className="bg-white text-black px-4 py-2 rounded-lg font-semibold hover:bg-gray-200"
+                  >
+                    Add
+                  </button>
+                </div>
 
                 {/* DELETE */}
                 <button
