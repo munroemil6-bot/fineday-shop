@@ -6,6 +6,22 @@ import ProductCard from "../components/ProductCard";
 import Cart from "../components/Cart";
 import SearchBar from "../components/SearchBar";
 
+// 1. Establish environment once at the top file-level scope
+const getIsDev = () => {
+  if (typeof process !== "undefined" && process.env.NODE_ENV === "test") {
+    return true;
+  }
+  if (typeof globalThis !== "undefined") {
+    const meta = globalThis["import" + "." + "meta"];
+    if (meta && meta.env && meta.env.DEV) {
+      return true;
+    }
+  }
+  return false;
+};
+
+const isDev = getIsDev();
+
 function Products() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
@@ -15,28 +31,12 @@ function Products() {
   const [amountPaid, setAmountPaid] = useState("");
   const [paymentError, setPaymentError] = useState("");
 
-  // Safe environment helper that keeps Jest's static parser completely happy
-  const getIsDev = () => {
-    if (typeof process !== "undefined" && process.env.NODE_ENV === "test") {
-      return true;
-    }
-    if (typeof globalThis !== "undefined") {
-      const meta = globalThis["import" + "." + "meta"];
-      if (meta && meta.env && meta.env.DEV) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const isDev = getIsDev();
-
   // FETCH PRODUCTS
   const fetchProducts = async () => {
     // Production Mode (GitHub Pages): Load data instantly from the compiled bundle
     if (!isDev) {
       setProducts(database.products);
-      return; // <div><strong>CRUCIAL:</strong> This stops the function here so Axios never fires!</div>
+      return;
     }
 
     // Local Dev Mode: Keep trying to hit your local json-server for real-time adjustments
@@ -84,15 +84,15 @@ function Products() {
       ),
     );
 
-    // PERSIST DATA LOCALLY (Only run network request if on localhost)
-    if (isDev) {
-      try {
-        await API.patch(`/products/${product.id}`, {
-          quantity: product.quantity - 1,
-        });
-      } catch (error) {
-        console.error("Local network save failed:", error);
-      }
+    // Hard Guard clause: Stop completely if not in local development mode
+    if (!isDev) return;
+
+    try {
+      await API.patch(`/products/${product.id}`, {
+        quantity: product.quantity - 1,
+      });
+    } catch (error) {
+      console.error("Local network save failed:", error);
     }
   };
 
@@ -108,19 +108,19 @@ function Products() {
         item.id === productId
           ? { ...item, quantity: item.quantity + itemToRemove.cartQuantity }
           : item,
-      ),
-    );
+      )
+    ); // ✅ Fixed syntax closing brackets here
 
-    // PERSIST DATA LOCALLY (Only run network request if on localhost)
-    if (isDev) {
-      try {
-        const productInState = products.find((item) => item.id === productId);
-        await API.patch(`/products/${productId}`, {
-          quantity: (productInState?.quantity ?? 0) + itemToRemove.cartQuantity,
-        });
-      } catch (error) {
-        console.error("Local network save failed:", error);
-      }
+    // Hard Guard clause: Stop completely if not in local development mode
+    if (!isDev) return;
+
+    try {
+      const productInState = products.find((item) => item.id === productId);
+      await API.patch(`/products/${productId}`, {
+        quantity: (productInState?.quantity ?? 0) + itemToRemove.cartQuantity,
+      });
+    } catch (error) {
+      console.error("Local network save failed:", error);
     }
   };
 

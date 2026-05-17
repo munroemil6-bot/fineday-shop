@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50.49% </span>
+                <span class="strong">49.51% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>51/101</span>
+                <span class='fraction'>51/103</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -382,18 +382,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -404,6 +395,15 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -461,13 +461,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -488,6 +488,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -495,7 +496,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -691,6 +691,22 @@ import ProductCard from "../components/ProductCard";
 import Cart from "../components/Cart";
 import SearchBar from "../components/SearchBar";
 &nbsp;
+// 1. Establish environment once at the top file-level scope
+const getIsDev = () =&gt; {
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof process !== "undefined" &amp;&amp; process.env.NODE_ENV === "test") {
+    return true;
+  }
+<span class="cstat-no" title="statement not covered" >  if (typeof globalThis !== "undefined") {</span>
+    const meta = <span class="cstat-no" title="statement not covered" >globalThis["import" + "." + "meta"];</span>
+<span class="cstat-no" title="statement not covered" >    if (meta &amp;&amp; meta.env &amp;&amp; meta.env.DEV) {</span>
+<span class="cstat-no" title="statement not covered" >      return true;</span>
+    }
+  }
+<span class="cstat-no" title="statement not covered" >  return false;</span>
+};
+&nbsp;
+const isDev = getIsDev();
+&nbsp;
 function Products() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
@@ -699,22 +715,6 @@ function Products() {
   const [paymentMethod, setPaymentMethod] = useState("mpesa");
   const [amountPaid, setAmountPaid] = useState("");
   const [paymentError, setPaymentError] = useState("");
-&nbsp;
-  // Safe environment helper that keeps Jest's static parser completely happy
-  const getIsDev = () =&gt; {
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof process !== "undefined" &amp;&amp; process.env.NODE_ENV === "test") {
-      return true;
-    }
-<span class="cstat-no" title="statement not covered" >    if (typeof globalThis !== "undefined") {</span>
-      const meta = <span class="cstat-no" title="statement not covered" >globalThis["import" + "." + "meta"];</span>
-<span class="cstat-no" title="statement not covered" >      if (meta &amp;&amp; meta.env &amp;&amp; meta.env.DEV) {</span>
-<span class="cstat-no" title="statement not covered" >        return true;</span>
-      }
-    }
-<span class="cstat-no" title="statement not covered" >    return false;</span>
-  };
-&nbsp;
-  const isDev = getIsDev();
 &nbsp;
   // FETCH PRODUCTS
   const fetchProducts = async () =&gt; {
@@ -769,15 +769,15 @@ function Products() {
       ),
     );
 &nbsp;
-    // PERSIST DATA LOCALLY (Only run network request if on localhost)
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (isDev) {
-      try {
-        await API.patch(`/products/${product.id}`, {
-          quantity: product.quantity - 1,
-        });
-      } catch (error) {
-<span class="cstat-no" title="statement not covered" >        console.error("Local network save failed:", error);</span>
-      }
+    // Hard Guard clause: Stop completely if not in local development mode
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!isDev) <span class="cstat-no" title="statement not covered" >return;</span>
+&nbsp;
+    try {
+      await API.patch(`/products/${product.id}`, {
+        quantity: product.quantity - 1,
+      });
+    } catch (error) {
+<span class="cstat-no" title="statement not covered" >      console.error("Local network save failed:", error);</span>
     }
   };
 &nbsp;
@@ -793,19 +793,19 @@ function Products() {
         item.id === productId
           ? { ...item, quantity: item.quantity + itemToRemove.cartQuantity }
           : item,
-      ),
-    );
+      )
+    ); // ✅ Fixed syntax closing brackets here
 &nbsp;
-    // PERSIST DATA LOCALLY (Only run network request if on localhost)
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (isDev) {
-      try {
-        const productInState = products.find((item) =&gt; item.id === productId);
-        await API.patch(`/products/${productId}`, {
-          quantity: (productInState?.quantity ?? <span class="branch-1 cbranch-no" title="branch not covered" >0)</span> + itemToRemove.cartQuantity,
-        });
-      } catch (error) {
-<span class="cstat-no" title="statement not covered" >        console.error("Local network save failed:", error);</span>
-      }
+    // Hard Guard clause: Stop completely if not in local development mode
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!isDev) <span class="cstat-no" title="statement not covered" >return;</span>
+&nbsp;
+    try {
+      const productInState = products.find((item) =&gt; item.id === productId);
+      await API.patch(`/products/${productId}`, {
+        quantity: (productInState?.quantity ?? <span class="branch-1 cbranch-no" title="branch not covered" >0)</span> + itemToRemove.cartQuantity,
+      });
+    } catch (error) {
+<span class="cstat-no" title="statement not covered" >      console.error("Local network save failed:", error);</span>
     }
   };
 &nbsp;
@@ -1000,7 +1000,7 @@ export default Products;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-17T19:48:17.567Z
+                at 2026-05-17T19:57:56.092Z
             </div>
         <script src="../prettify.js"></script>
         <script>
