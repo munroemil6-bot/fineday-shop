@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">35.29% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/10</span>
+                <span class='fraction'>6/17</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">9.09% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>1/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">35.29% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/10</span>
+                <span class='fraction'>6/17</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -87,7 +87,22 @@
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
 <a name='L24'></a><a href='#L24'>24</a>
-<a name='L25'></a><a href='#L25'>25</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -106,7 +121,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -130,10 +160,25 @@ const getIsDevelopment = () =&gt; {
 &nbsp;
 const isDevelopment = getIsDevelopment();
 &nbsp;
-const API = axios.create({
-  // Use local server port in dev/test, clean relative root string in production
-  baseURL: isDevelopment ? "http://localhost:3001" : <span class="branch-1 cbranch-no" title="branch not covered" >""</span>
+// 1. Define our standard base configuration for local development and Jest testing
+let API = axios.create({
+  baseURL: "http://localhost:3001",
 });
+&nbsp;
+// 2. THE PRODUCTION SHIELD: If live on GitHub Pages, swap the client with a silent mock object
+<span class="missing-if-branch" title="if path not taken" >I</span>if (!isDevelopment) {
+<span class="cstat-no" title="statement not covered" >  API = {</span>
+    get: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >new Promise(<span class="fstat-no" title="function not covered" >()</span> =&gt; {}),</span> // Returns a pending promise so no downstream blocks fire
+    post: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >Promise.resolve({ data: {} }),</span>
+    patch: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >Promise.resolve({ data: {} }),</span>
+    delete: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >Promise.resolve({ data: {} }),</span>
+    create: <span class="fstat-no" title="function not covered" >fu</span>nction() { <span class="cstat-no" title="statement not covered" >return this; </span>},
+    interceptors: {
+      request: { use: <span class="fstat-no" title="function not covered" >()</span> =&gt; {}, eject: <span class="fstat-no" title="function not covered" >()</span> =&gt; {} },
+      response: { use: <span class="fstat-no" title="function not covered" >()</span> =&gt; {}, eject: <span class="fstat-no" title="function not covered" >()</span> =&gt; {} }
+    }
+  };
+}
 &nbsp;
 export default API;</pre></td></tr></table></pre>
 
@@ -142,7 +187,7 @@ export default API;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-17T21:23:35.367Z
+                at 2026-05-17T21:33:34.011Z
             </div>
         <script src="../prettify.js"></script>
         <script>
