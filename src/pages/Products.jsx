@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
-import bundledData from "../data/db.json"; // 1. Import your static data directly
+import database from "./data/db.json";
 
 import ProductCard from "../components/ProductCard";
 import Cart from "../components/Cart";
@@ -16,14 +16,15 @@ function Products() {
   const [paymentError, setPaymentError] = useState("");
 
   // Safely checks Vite's environment flag using string brackets to hide it from Jest's parser
-  const isDev = typeof globalThis !== "undefined" && 
-                globalThis['import' + '']?.['meta']?.env?.DEV;
+  const isDev =
+    typeof globalThis !== "undefined" &&
+    globalThis["import" + ""]?.["meta"]?.env?.DEV;
 
   // FETCH PRODUCTS
   const fetchProducts = async () => {
     // Production Mode (GitHub Pages): Load data instantly from the compiled bundle
     if (!isDev) {
-      setProducts(bundledData.products);
+      setProducts(database.products);
       return;
     }
 
@@ -32,8 +33,10 @@ function Products() {
       const response = await API.get("/products");
       setProducts(response.data);
     } catch (error) {
-      console.warn("Local json-server not running, falling back to bundled data.");
-      setProducts(bundledData.products);
+      console.warn(
+        "Local json-server not running, falling back to bundled data.",
+      );
+      setProducts(database.products);
     }
   };
 
@@ -55,7 +58,7 @@ function Products() {
         return prevCart.map((item) =>
           item.id === product.id
             ? { ...item, cartQuantity: item.cartQuantity + 1 }
-            : item
+            : item,
         );
       }
       return [...prevCart, { ...product, cartQuantity: 1 }];
@@ -64,15 +67,17 @@ function Products() {
     // UPDATE PRODUCTS UI STATE
     setProducts((prevProducts) =>
       prevProducts.map((item) =>
-        item.id === product.id ? { ...item, quantity: item.quantity - 1 } : item
-      )
+        item.id === product.id
+          ? { ...item, quantity: item.quantity - 1 }
+          : item,
+      ),
     );
 
     // PERSIST DATA LOCALLY (Only run network request if on localhost)
     if (isDev) {
       try {
         await API.patch(`/products/${product.id}`, {
-          quantity: product.quantity - 1
+          quantity: product.quantity - 1,
         });
       } catch (error) {
         console.error("Local network save failed:", error);
@@ -91,8 +96,8 @@ function Products() {
       prevProducts.map((item) =>
         item.id === productId
           ? { ...item, quantity: item.quantity + itemToRemove.cartQuantity }
-          : item
-      )
+          : item,
+      ),
     );
 
     // PERSIST DATA LOCALLY (Only run network request if on localhost)
@@ -100,7 +105,7 @@ function Products() {
       try {
         const productInState = products.find((item) => item.id === productId);
         await API.patch(`/products/${productId}`, {
-          quantity: (productInState?.quantity ?? 0) + itemToRemove.cartQuantity
+          quantity: (productInState?.quantity ?? 0) + itemToRemove.cartQuantity,
         });
       } catch (error) {
         console.error("Local network save failed:", error);
@@ -119,11 +124,17 @@ function Products() {
       return;
     }
 
-    const total = cart.reduce((sum, item) => sum + (item.price * item.cartQuantity), 0);
+    const total = cart.reduce(
+      (sum, item) => sum + item.price * item.cartQuantity,
+      0,
+    );
     const totalItems = cart.reduce((sum, item) => sum + item.cartQuantity, 0);
 
     const items = cart
-      .map((item) => `${item.name}\nx${item.cartQuantity}\n- Ksh ${item.price * item.cartQuantity}`)
+      .map(
+        (item) =>
+          `${item.name}\nx${item.cartQuantity}\n- Ksh ${item.price * item.cartQuantity}`,
+      )
       .join("\n");
 
     setPaymentMethod("mpesa");
@@ -152,7 +163,7 @@ function Products() {
 
   // SEARCH
   const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(search.toLowerCase())
+    product.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -161,13 +172,16 @@ function Products() {
       <div
         className="h-[350px] flex flex-col items-center justify-center bg-cover bg-center relative"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1542838132-92c53300491e')"
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1542838132-92c53300491e')",
         }}
       >
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative z-10 text-center">
           <h1 className="text-6xl font-bold text-white">Products</h1>
-          <p className="text-white text-xl mt-4">Wholesale Shopping Made Easy</p>
+          <p className="text-white text-xl mt-4">
+            Wholesale Shopping Made Easy
+          </p>
         </div>
       </div>
 
@@ -180,13 +194,21 @@ function Products() {
           <div className="lg:col-span-3">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} addToCart={addToCart} />
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  addToCart={addToCart}
+                />
               ))}
             </div>
           </div>
 
           {/* CART VIEW */}
-          <Cart cart={cart} handleBuy={handleBuy} removeFromCart={removeFromCart} />
+          <Cart
+            cart={cart}
+            handleBuy={handleBuy}
+            removeFromCart={removeFromCart}
+          />
         </div>
       </div>
 
@@ -198,7 +220,9 @@ function Products() {
             <div className="bg-gray-100 p-4 rounded-lg mb-4">
               <p className="font-semibold">Items:</p>
               <pre className="whitespace-pre-wrap mt-2">{receipt.items}</pre>
-              <p className="mt-4 font-semibold">Total items: {receipt.totalItems}</p>
+              <p className="mt-4 font-semibold">
+                Total items: {receipt.totalItems}
+              </p>
               <p className="mt-2 font-semibold">Total: Ksh {receipt.total}</p>
             </div>
 
@@ -233,7 +257,9 @@ function Products() {
 
               {paymentMethod === "cash" && (
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium">Amount given</label>
+                  <label className="block text-sm font-medium">
+                    Amount given
+                  </label>
                   <input
                     type="number"
                     min="0"
@@ -246,13 +272,16 @@ function Products() {
                     placeholder="Enter amount given"
                   />
                   <p className="text-sm text-gray-600">
-                    Change: Ksh {Math.max(0, Number(amountPaid || 0) - receipt.total)}
+                    Change: Ksh{" "}
+                    {Math.max(0, Number(amountPaid || 0) - receipt.total)}
                   </p>
                 </div>
               )}
             </div>
 
-            {paymentError && <p className="mt-4 text-sm text-red-600">{paymentError}</p>}
+            {paymentError && (
+              <p className="mt-4 text-sm text-red-600">{paymentError}</p>
+            )}
 
             <button
               type="button"
