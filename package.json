@@ -9,7 +9,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "json-server --watch db.json --port 3001",
+    "server": "json-server --watch src/data/db.json --port 3001",
     "test": "jest",
     "test:coverage": "jest --coverage --passWithNoTests",
     "predeploy": "npm run build",
