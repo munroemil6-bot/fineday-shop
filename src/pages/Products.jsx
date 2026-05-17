@@ -16,7 +16,8 @@ function Products() {
   const [paymentError, setPaymentError] = useState("");
 
   // Helper flag to detect if the app is running locally or deployed live
-  const isDev = typeof window !== "undefined" && window.location.hostname === "localhost";
+  // Use Vite's native compile-time flag:
+  const isDev = import.meta.env.DEV;
 
   // FETCH PRODUCTS
   const fetchProducts = async () => {
