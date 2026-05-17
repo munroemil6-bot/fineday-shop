@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1779046960450" clover="3.2.0">
-  <project timestamp="1779046960450" name="All files">
+<coverage generated="1779047073501" clover="3.2.0">
+  <project timestamp="1779047073501" name="All files">
     <metrics statements="17" coveredstatements="17" conditionals="8" coveredconditionals="8" methods="10" coveredmethods="10" elements="35" coveredelements="35" complexity="0" loc="17" ncloc="17" packages="1" files="3" classes="3"/>
     <file name="Cart.jsx" path="/home/philip-simiyu/Desktop/School/fineday-shop/src/components/Cart.jsx">
       <metrics statements="11" coveredstatements="11" conditionals="4" coveredconditionals="4" methods="6" coveredmethods="6"/>

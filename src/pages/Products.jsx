@@ -15,10 +15,21 @@ function Products() {
   const [amountPaid, setAmountPaid] = useState("");
   const [paymentError, setPaymentError] = useState("");
 
-  // Safely checks Vite's environment flag using string brackets to hide it from Jest's parser
-  const isDev =
-    typeof globalThis !== "undefined" &&
-    globalThis["import" + ""]?.["meta"]?.env?.DEV;
+  // Safe environment helper that keeps Jest's static parser completely happy
+  const getIsDev = () => {
+    if (typeof process !== "undefined" && process.env.NODE_ENV === "test") {
+      return true;
+    }
+    if (typeof globalThis !== "undefined") {
+      const meta = globalThis["import" + "." + "meta"];
+      if (meta && meta.env && meta.env.DEV) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const isDev = getIsDev();
 
   // FETCH PRODUCTS
   const fetchProducts = async () => {
