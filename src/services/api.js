@@ -1,12 +1,10 @@
 import axios from "axios";
 
 const getIsDevelopment = () => {
-  // If Jest is running the test, process.env will exist. Force development mode.
   if (typeof process !== "undefined" && process.env.NODE_ENV === "test") {
     return true;
   }
 
-  // Sneak past Jest's parser by evaluating import.meta using string brackets
   if (typeof globalThis !== "undefined") {
     const meta = globalThis["import" + "." + "meta"];
     if (meta && meta.env && meta.env.DEV) {
@@ -20,9 +18,8 @@ const getIsDevelopment = () => {
 const isDevelopment = getIsDevelopment();
 
 const API = axios.create({
-  baseURL: isDevelopment 
-    ? "http://localhost:3001" 
-    : "https://localhost-fakedomain-prevent-404.com"
+  // Use local server port in dev/test, clean relative root string in production
+  baseURL: isDevelopment ? "http://localhost:3001" : ""
 });
 
 export default API;

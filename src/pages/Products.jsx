@@ -36,7 +36,7 @@ function Products() {
     // Production Mode (GitHub Pages): Load data instantly from the compiled bundle
     if (!isDev) {
       setProducts(database.products);
-      return;
+      return; // <div><strong>CRUCIAL:</strong> This stops the function here so Axios never fires!</div>
     }
 
     // Local Dev Mode: Keep trying to hit your local json-server for real-time adjustments
