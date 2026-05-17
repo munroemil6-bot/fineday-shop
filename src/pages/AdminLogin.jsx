@@ -158,7 +158,7 @@ function AdminLogin() {
               {/* OWNER IMAGE */}
               <div className="mb-6">
                 <img
-                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop"
+                  src=""
                   alt="Carolyne Naliaka"
                   className="w-full h-64 object-cover rounded-2xl shadow-lg"
                 />
