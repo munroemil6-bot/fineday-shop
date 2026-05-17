@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
-import bundledData from "../data/db.json"; // 1. Import your static fallback data
+import bundledData from "../data/db.json"; // 1. Import your static data directly
 
 import ProductCard from "../components/ProductCard";
 import Cart from "../components/Cart";
@@ -15,23 +15,23 @@ function Products() {
   const [amountPaid, setAmountPaid] = useState("");
   const [paymentError, setPaymentError] = useState("");
 
-  // Helper check to bypass network requests when deployed to GitHub Pages
+  // Helper flag to detect if the app is running locally or deployed live
   const isDev = typeof window !== "undefined" && window.location.hostname === "localhost";
 
   // FETCH PRODUCTS
   const fetchProducts = async () => {
-    // Production Mode: Instant load from src bundle without touching network
+    // Production Mode (GitHub Pages): Load data instantly from the compiled bundle
     if (!isDev) {
       setProducts(bundledData.products);
       return;
     }
 
-    // Local Dev Mode: Try loading live updates from json-server
+    // Local Dev Mode: Keep trying to hit your local json-server for real-time adjustments
     try {
       const response = await API.get("/products");
       setProducts(response.data);
     } catch (error) {
-      console.log("Local server down, using fallback:", error);
+      console.warn("Local json-server not running, falling back to bundled data.");
       setProducts(bundledData.products);
     }
   };
@@ -47,10 +47,9 @@ function Products() {
       return;
     }
 
-    // UPDATE CART
+    // UPDATE CART STATE
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
-
       if (existingItem) {
         return prevCart.map((item) =>
           item.id === product.id
@@ -58,25 +57,24 @@ function Products() {
             : item
         );
       }
-
       return [...prevCart, { ...product, cartQuantity: 1 }];
     });
 
-    // UPDATE STATE UI
+    // UPDATE PRODUCTS UI STATE
     setProducts((prevProducts) =>
       prevProducts.map((item) =>
         item.id === product.id ? { ...item, quantity: item.quantity - 1 } : item
       )
     );
 
-    // UPDATE DB.JSON (Only if running locally)
+    // PERSIST DATA LOCALLY (Only run network request if on localhost)
     if (isDev) {
       try {
         await API.patch(`/products/${product.id}`, {
-          quantity: product.quantity - 1,
+          quantity: product.quantity - 1
         });
       } catch (error) {
-        console.log("Network mutation skipped:", error);
+        console.error("Local network save failed:", error);
       }
     }
   };
@@ -96,15 +94,15 @@ function Products() {
       )
     );
 
-    // UPDATE DB.JSON (Only if running locally)
+    // PERSIST DATA LOCALLY (Only run network request if on localhost)
     if (isDev) {
       try {
         const productInState = products.find((item) => item.id === productId);
         await API.patch(`/products/${productId}`, {
-          quantity: (productInState?.quantity ?? 0) + itemToRemove.cartQuantity,
+          quantity: (productInState?.quantity ?? 0) + itemToRemove.cartQuantity
         });
       } catch (error) {
-        console.log("Network mutation skipped:", error);
+        console.error("Local network save failed:", error);
       }
     }
   };
@@ -120,7 +118,7 @@ function Products() {
       return;
     }
 
-    const total = cart.reduce((sum, item) => sum + item.price * item.cartQuantity, 0);
+    const total = cart.reduce((sum, item) => sum + (item.price * item.cartQuantity), 0);
     const totalItems = cart.reduce((sum, item) => sum + item.cartQuantity, 0);
 
     const items = cart
@@ -128,8 +126,8 @@ function Products() {
       .join("\n");
 
     setPaymentMethod("mpesa");
-    amountPaid && setAmountPaid("");
-    paymentError && setPaymentError("");
+    setAmountPaid("");
+    setPaymentError("");
     setReceipt({ items, total, totalItems });
   };
 
@@ -162,7 +160,7 @@ function Products() {
       <div
         className="h-[350px] flex flex-col items-center justify-center bg-cover bg-center relative"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1542838132-92c53300491e')",
+          backgroundImage: "url('https://images.unsplash.com/photo-1542838132-92c53300491e')"
         }}
       >
         <div className="absolute inset-0 bg-black/50"></div>
@@ -177,7 +175,7 @@ function Products() {
         <SearchBar search={search} setSearch={setSearch} />
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-6">
-          {/* PRODUCTS CONTAINER */}
+          {/* PRODUCTS LIST */}
           <div className="lg:col-span-3">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {filteredProducts.map((product) => (
@@ -191,7 +189,7 @@ function Products() {
         </div>
       </div>
 
-      {/* MODAL BILLING */}
+      {/* MODAL CHECKOUT */}
       {receipt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-xl rounded-2xl bg-white p-6 shadow-xl">
@@ -229,7 +227,7 @@ function Products() {
                     setPaymentError("");
                   }}
                 />
-                <span>Pay Ksh now</span>
+                <span>Pay Cash now</span>
               </label>
 
               {paymentMethod === "cash" && (
