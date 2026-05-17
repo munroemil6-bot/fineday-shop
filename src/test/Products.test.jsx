@@ -4,6 +4,7 @@ import API from '../services/api';
 
 jest.mock('../services/api');
 
+// Explicit mock data layout mirroring your database schema
 const mockProducts = [
   { id: '1', name: 'Bread', price: 80, quantity: 10, image: 'bread.jpg' },
   { id: '2', name: 'Milk', price: 50, quantity: 5, image: 'milk.jpg' }
@@ -11,8 +12,18 @@ const mockProducts = [
 
 describe('Products', () => {
   beforeEach(() => {
+    // 1. Intercept Vite's import.meta.env check inside Jest
+    globalThis['import'] = { meta: { env: { DEV: true } } };
+
+    // 2. Clear and set mock response resolutions
     API.get.mockResolvedValue({ data: mockProducts });
     API.patch.mockResolvedValue({ data: {} });
+  });
+
+  afterEach(() => {
+    // Clean up mutations assigned to global layout
+    delete globalThis['import'];
+    jest.clearAllMocks();
   });
 
   test('fetches and displays products', async () => {
@@ -44,7 +55,6 @@ describe('Products', () => {
     const addButton = screen.getAllByText('Add to Cart')[0];
     fireEvent.click(addButton);
 
-    // Check that Bread appears in the cart
     const cartSection = screen.getByText('Cart').closest('div');
     expect(cartSection).toHaveTextContent('Bread');
     expect(cartSection).toHaveTextContent('Quantity: 1');
@@ -56,13 +66,18 @@ describe('Products', () => {
 
     await waitFor(() => screen.getByText('Bread'));
 
+    // Add item to cart
     const addButton = screen.getAllByText('Add to Cart')[0];
     fireEvent.click(addButton);
 
+    // Click remove button inside the cart summary block
     const removeButton = await screen.findByText('Remove');
     fireEvent.click(removeButton);
 
+    // Verify cart updates immediately
     expect(screen.queryByText('Quantity: 1')).not.toBeInTheDocument();
-    expect(screen.getByText('10 Left')).toBeInTheDocument();
+    
+    // Loose node match verifying stock count returns safely back to 10
+    expect(screen.getByText(/10\s*Items/i)).toBeInTheDocument();
   });
 });

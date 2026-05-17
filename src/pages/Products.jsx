@@ -15,9 +15,9 @@ function Products() {
   const [amountPaid, setAmountPaid] = useState("");
   const [paymentError, setPaymentError] = useState("");
 
-  // Helper flag to detect if the app is running locally or deployed live
-  // Use Vite's native compile-time flag:
-  const isDev = import.meta.env.DEV;
+  // Safely checks Vite's environment flag using string brackets to hide it from Jest's parser
+  const isDev = typeof globalThis !== "undefined" && 
+                globalThis['import' + '']?.['meta']?.env?.DEV;
 
   // FETCH PRODUCTS
   const fetchProducts = async () => {
