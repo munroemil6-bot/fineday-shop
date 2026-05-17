@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
-import database from "./data/db.json";
+import database from "../data/db.json";
 
 import ProductCard from "../components/ProductCard";
 import Cart from "../components/Cart";

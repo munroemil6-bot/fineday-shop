@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>5/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">37.5% </span>
+                <span class="strong">30.76% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/8</span>
+                <span class='fraction'>4/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>1/1</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>5/10</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -74,26 +74,74 @@
 <a name='L9'></a><a href='#L9'>9</a>
 <a name='L10'></a><a href='#L10'>10</a>
 <a name='L11'></a><a href='#L11'>11</a>
-<a name='L12'></a><a href='#L12'>12</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import axios from "axios";
 &nbsp;
-const isDevelopment = 
-  (typeof process !== "undefined" &amp;&amp; process.env.NODE_ENV === "test") ||
-  (<span class="branch-2 cbranch-no" title="branch not covered" >typeof window !== "undefined" </span>&amp;&amp; <span class="branch-3 cbranch-no" title="branch not covered" >window.location.hostname === "localhost")</span> ||
-  (<span class="branch-4 cbranch-no" title="branch not covered" >typeof globalThis !== "undefined" </span>&amp;&amp; <span class="branch-5 cbranch-no" title="branch not covered" >globalThis['import' + '']?.['meta']?.env?.DEV)</span>;
+const getIsDevelopment = () =&gt; {
+  // If Jest is running the test, process.env will exist. Force development mode.
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof process !== "undefined" &amp;&amp; process.env.NODE_ENV === "test") {
+    return true;
+  }
+&nbsp;
+  // Sneak past Jest's parser by evaluating import.meta using string brackets
+<span class="cstat-no" title="statement not covered" >  if (typeof globalThis !== "undefined") {</span>
+    const meta = <span class="cstat-no" title="statement not covered" >globalThis["import" + "." + "meta"];</span>
+<span class="cstat-no" title="statement not covered" >    if (meta &amp;&amp; meta.env &amp;&amp; meta.env.DEV) {</span>
+<span class="cstat-no" title="statement not covered" >      return true;</span>
+    }
+  }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return false;</span>
+};
+&nbsp;
+const isDevelopment = getIsDevelopment();
 &nbsp;
 const API = axios.create({
-  baseURL: isDevelopment ? "http://localhost:3001" : <span class="branch-1 cbranch-no" title="branch not covered" >"/"</span>
+  baseURL: isDevelopment 
+    ? "http://localhost:3001" 
+    : <span class="branch-1 cbranch-no" title="branch not covered" >"https://localhost-fakedomain-prevent-404.com"</span>
 });
 &nbsp;
 export default API;</pre></td></tr></table></pre>
@@ -103,7 +151,7 @@ export default API;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-17T19:04:49.566Z
+                at 2026-05-17T19:48:17.567Z
             </div>
         <script src="../prettify.js"></script>
         <script>
